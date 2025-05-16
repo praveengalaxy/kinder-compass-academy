@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,21 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Custom colors for our theme
+				"edu-blue": "#4A90E2",
+				"edu-orange": "#F9A826",
+				"edu-green": "#5EB95E",
+				"edu-cream": "#FFF9F0",
+				"edu-navy": "#2D3748",
+				"edu-light-blue": "#D3E4FD",
+				"edu-peach": "#FDE1D3",
+				"edu-purple": "#E5DEFF",
+				"edu-pink": "#FFDEE2",
+			},
+			fontFamily: {
+				nunito: ['Nunito', 'sans-serif'],
+				opensans: ['Open Sans', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -69,26 +84,42 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			keyframes: {
-				'accordion-down': {
-					from: {
-						height: '0'
+				"accordion-down": {
+					from: { height: "0" },
+					to: { height: "var(--radix-accordion-content-height)" },
+				},
+				"accordion-up": {
+					from: { height: "var(--radix-accordion-content-height)" },
+					to: { height: "0" },
+				},
+				"fade-in": {
+					"0%": {
+						opacity: "0",
+						transform: "translateY(10px)"
 					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
+					"100%": {
+						opacity: "1",
+						transform: "translateY(0)"
 					}
 				},
-				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
+				"bounce-light": {
+					"0%, 100%": {
+						transform: "translateY(0)"
 					},
-					to: {
-						height: '0'
+					"50%": {
+						transform: "translateY(-5px)"
 					}
 				}
 			},
 			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				"accordion-down": "accordion-down 0.2s ease-out",
+				"accordion-up": "accordion-up 0.2s ease-out",
+				"fade-in": "fade-in 0.5s ease-out",
+				"bounce-light": "bounce-light 2s infinite ease-in-out"
+			},
+			boxShadow: {
+				'edu-soft': '0 4px 10px rgba(0, 0, 0, 0.05)',
+				'edu-card': '0 8px 16px rgba(0, 0, 0, 0.08)',
 			}
 		}
 	},
