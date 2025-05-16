@@ -1,19 +1,36 @@
-
 import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Book, Award, Smile, Frown, Meh } from 'lucide-react';
+import { Check, Book, Award, Smile, Frown, Meh, BookOpen, Globe, BookText } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { 
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import EducationCard from '@/components/shared/EducationCard';
+import { Toggle } from '@/components/ui/toggle';
 
 const Children = () => {
-  const [activeTab, setActiveTab] = useState('quiz');
+  const [activeTab, setActiveTab] = useState('learning');
   const [currentQuizQuestion, setCurrentQuizQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
   const [moodFilter, setMoodFilter] = useState<string | null>(null);
+  const [selectedGrade, setSelectedGrade] = useState('1');
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
   // Mock quiz data
   const quizQuestions = [
@@ -77,6 +94,57 @@ const Children = () => {
     },
   ];
 
+  // Subjects data
+  const subjects = [
+    { 
+      id: 'maths',
+      title: 'Maths', 
+      description: 'Numbers, shapes, and problem solving', 
+      icon: <Book className="h-8 w-8 text-white" />,
+      color: 'bg-edu-blue'
+    },
+    { 
+      id: 'science',
+      title: 'Science', 
+      description: 'Explore the natural world', 
+      icon: <BookOpen className="h-8 w-8 text-white" />,
+      color: 'bg-edu-green'
+    },
+    { 
+      id: 'social',
+      title: 'Social Science', 
+      description: 'Learn about people and places', 
+      icon: <Globe className="h-8 w-8 text-white" />,
+      color: 'bg-edu-orange'
+    },
+    { 
+      id: 'language',
+      title: 'Regional Language', 
+      description: 'Words, stories, and communication', 
+      icon: <BookText className="h-8 w-8 text-white" />,
+      color: 'bg-purple-500'
+    }
+  ];
+
+  // Extra learning resources
+  const extraResources = [
+    {
+      title: "Science Experiments",
+      description: "Fun home experiments to learn scientific concepts",
+      icon: <BookOpen className="h-6 w-6 text-white" />
+    },
+    {
+      title: "Math Games",
+      description: "Interactive games to practice math skills",
+      icon: <Book className="h-6 w-6 text-white" />
+    },
+    {
+      title: "Cultural Stories",
+      description: "Learn about different cultures through stories",
+      icon: <BookText className="h-6 w-6 text-white" />
+    }
+  ];
+
   const handleAnswerSelect = (answerIndex: number) => {
     setSelectedAnswer(answerIndex);
     const correct = answerIndex === quizQuestions[currentQuizQuestion].correctAnswer;
@@ -113,19 +181,185 @@ const Children = () => {
 
   return (
     <Layout>
-      <section className="section-child py-12 px-4">
+      <section className="section-child py-6 px-4">
         <div className="container mx-auto">
-          <h1 className="text-3xl md:text-4xl font-nunito font-bold text-center mb-8">Children's Learning Area</h1>
+          <h1 className="text-3xl md:text-4xl font-nunito font-bold text-center mb-4">Children's Learning Area</h1>
+          
+          {/* Grade Selection */}
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="w-full sm:w-auto">
+              <label htmlFor="grade-select" className="block text-lg font-nunito font-semibold mb-2">
+                Select Your Grade:
+              </label>
+              <Select value={selectedGrade} onValueChange={setSelectedGrade}>
+                <SelectTrigger className="w-full sm:w-[180px] bg-white border-edu-blue">
+                  <SelectValue placeholder="Select grade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1">Grade 1</SelectItem>
+                  <SelectItem value="2">Grade 2</SelectItem>
+                  <SelectItem value="3">Grade 3</SelectItem>
+                  <SelectItem value="4">Grade 4</SelectItem>
+                  <SelectItem value="5">Grade 5</SelectItem>
+                  <SelectItem value="6">Grade 6</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="w-full sm:w-auto flex items-center justify-end gap-2">
+              <span className="text-lg font-nunito font-semibold hidden sm:inline-block">Or browse by grade:</span>
+              <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-none">
+                {[1, 2, 3, 4, 5, 6].map((grade) => (
+                  <Toggle
+                    key={grade}
+                    pressed={selectedGrade === grade.toString()}
+                    onPressedChange={() => setSelectedGrade(grade.toString())}
+                    className={`rounded-full min-w-[40px] h-10 ${
+                      selectedGrade === grade.toString() 
+                        ? 'bg-edu-blue text-white border-edu-blue' 
+                        : 'bg-white border-edu-blue text-edu-blue'
+                    }`}
+                  >
+                    {grade}
+                  </Toggle>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Subject Selection */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-nunito font-bold mb-4">Choose a Subject</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {subjects.map((subject) => (
+                <EducationCard
+                  key={subject.id}
+                  title={subject.title}
+                  description={subject.description}
+                  icon={<div className={`${subject.color} p-4 rounded-full`}>{subject.icon}</div>}
+                  className={`${selectedSubject === subject.id ? 'ring-2 ring-edu-blue ring-offset-2' : ''}`}
+                  onClick={() => setSelectedSubject(subject.id === selectedSubject ? null : subject.id)}
+                />
+              ))}
+            </div>
+          </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="grid grid-cols-2 w-full max-w-md mx-auto">
+            <TabsList className="grid grid-cols-3 w-full max-w-md mx-auto">
+              <TabsTrigger value="learning" className="text-base md:text-lg py-3">
+                Learning
+              </TabsTrigger>
               <TabsTrigger value="quiz" className="text-base md:text-lg py-3">
                 Fun Quizzes
               </TabsTrigger>
               <TabsTrigger value="stories" className="text-base md:text-lg py-3">
-                Interactive Stories
+                Stories
               </TabsTrigger>
             </TabsList>
+
+            {/* Learning Tab */}
+            <TabsContent value="learning">
+              <div className="max-w-3xl mx-auto">
+                <Card className="border-4 border-edu-orange mb-8">
+                  <CardHeader className="bg-edu-orange/10">
+                    <CardTitle className="text-2xl">
+                      Grade {selectedGrade} {selectedSubject ? subjects.find(s => s.id === selectedSubject)?.title : 'Learning'}
+                    </CardTitle>
+                    <CardDescription className="text-lg font-nunito">
+                      {selectedSubject 
+                        ? `Explore ${subjects.find(s => s.id === selectedSubject)?.title} lessons for Grade ${selectedGrade}`
+                        : 'Select a subject to begin learning'
+                      }
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    {selectedSubject ? (
+                      <div className="space-y-4">
+                        <p className="text-lg">Ready to start learning? Click on a lesson below:</p>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Button variant="outline" className="h-auto p-4 text-left flex items-start">
+                            <div className="mr-3 mt-1">
+                              <div className={`${subjects.find(s => s.id === selectedSubject)?.color} p-2 rounded-full`}>
+                                {subjects.find(s => s.id === selectedSubject)?.icon}
+                              </div>
+                            </div>
+                            <div>
+                              <h4 className="font-bold mb-1 text-lg">Lesson 1</h4>
+                              <p className="text-sm text-gray-600">Introduction to {subjects.find(s => s.id === selectedSubject)?.title}</p>
+                            </div>
+                          </Button>
+                          
+                          <Button variant="outline" className="h-auto p-4 text-left flex items-start">
+                            <div className="mr-3 mt-1">
+                              <div className={`${subjects.find(s => s.id === selectedSubject)?.color} p-2 rounded-full`}>
+                                {subjects.find(s => s.id === selectedSubject)?.icon}
+                              </div>
+                            </div>
+                            <div>
+                              <h4 className="font-bold mb-1 text-lg">Lesson 2</h4>
+                              <p className="text-sm text-gray-600">Basic concepts for Grade {selectedGrade}</p>
+                            </div>
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-lg mb-4">Please select a subject from above to view lessons</p>
+                        <Button 
+                          onClick={() => setSelectedSubject('maths')}
+                          className="bg-edu-blue hover:bg-edu-blue/80"
+                        >
+                          Start with Math
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Learn More Section */}
+                <div className="mb-8">
+                  <h3 className="text-2xl font-nunito font-bold mb-4">Learn More</h3>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Explore Extra Learning Resources</CardTitle>
+                      <CardDescription>
+                        Discover fun ways to learn beyond your regular lessons
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Carousel
+                        opts={{
+                          align: "start",
+                        }}
+                        className="w-full"
+                      >
+                        <CarouselContent>
+                          {extraResources.map((resource, index) => (
+                            <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                              <div className="p-1">
+                                <Card className="border-2 border-edu-light-blue">
+                                  <CardContent className="p-6 flex flex-col items-center text-center">
+                                    <div className="bg-edu-blue p-3 rounded-full mb-4">
+                                      {resource.icon}
+                                    </div>
+                                    <h4 className="font-bold text-lg mb-2">{resource.title}</h4>
+                                    <p className="text-sm text-gray-600">{resource.description}</p>
+                                    <Button variant="outline" className="mt-4 w-full">Explore</Button>
+                                  </CardContent>
+                                </Card>
+                              </div>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="left-1" />
+                        <CarouselNext className="right-1" />
+                      </Carousel>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </TabsContent>
 
             {/* Quiz Tab */}
             <TabsContent value="quiz">
