@@ -6,10 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Book, User } from 'lucide-react';
 import EducationCard from '@/components/shared/EducationCard';
 import OnboardingTooltip from '@/components/ui/OnboardingTooltip';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Index = () => {
   const navigate = useNavigate();
   const [tooltipShown, setTooltipShown] = useState(false);
+  const { isAuthenticated, profile } = useAuth();
+
+  // Helper function to determine appropriate section based on user role
+  const goToRoleSection = () => {
+    if (profile?.role === 'parent') {
+      navigate('/parents');
+    } else if (profile?.role === 'student') {
+      navigate('/children');
+    } else {
+      // If not logged in, go to auth page
+      navigate('/auth');
+    }
+  };
 
   return (
     <Layout>
@@ -23,36 +37,52 @@ const Index = () => {
             A family-friendly platform connecting parents and children through engaging educational content
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 relative">
-            <div className="relative">
+            {isAuthenticated ? (
               <Button 
-                onClick={() => navigate('/parents')} 
+                onClick={goToRoleSection} 
                 className="btn-primary text-lg px-8 py-6 w-full sm:w-auto"
               >
-                <User className="mr-2 h-5 w-5" />
-                Parents Section
+                {profile?.role === 'parent' ? (
+                  <>
+                    <User className="mr-2 h-5 w-5" />
+                    Go to Parents Section
+                  </>
+                ) : (
+                  <>
+                    <Book className="mr-2 h-5 w-5" />
+                    Go to Children's Section
+                  </>
+                )}
               </Button>
-              <OnboardingTooltip 
-                id="parents-section"
-                title="For Parents"
-                content="Access learning resources and track your child's progress"
-                position="bottom"
-              />
-            </div>
-            <div className="relative">
-              <Button 
-                onClick={() => navigate('/children')} 
-                className="btn-secondary text-lg px-8 py-6 w-full sm:w-auto"
-              >
-                <Book className="mr-2 h-5 w-5" />
-                Children's Section
-              </Button>
-              <OnboardingTooltip
-                id="children-section"
-                title="For Children"
-                content="Explore fun learning activities and interactive stories"
-                position="bottom"
-              />
-            </div>
+            ) : (
+              <>
+                <div className="relative">
+                  <Button 
+                    onClick={() => navigate('/auth')} 
+                    className="btn-primary text-lg px-8 py-6 w-full sm:w-auto"
+                  >
+                    <User className="mr-2 h-5 w-5" />
+                    Get Started
+                  </Button>
+                  <OnboardingTooltip 
+                    id="login-signup"
+                    title="Join EduConnect"
+                    content="Create an account to access all learning resources"
+                    position="bottom"
+                  />
+                </div>
+                <div className="relative">
+                  <Button 
+                    onClick={() => navigate('/auth')} 
+                    className="btn-secondary text-lg px-8 py-6 w-full sm:w-auto"
+                    variant="outline"
+                  >
+                    <Book className="mr-2 h-5 w-5" />
+                    Learn More
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -128,12 +158,21 @@ const Index = () => {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
             Join thousands of families who are making education a fun and collaborative experience.
           </p>
-          <Button 
-            onClick={() => navigate('/parents')} 
-            className="btn-primary text-lg px-10 py-6"
-          >
-            Get Started Today
-          </Button>
+          {isAuthenticated ? (
+            <Button 
+              onClick={goToRoleSection} 
+              className="btn-primary text-lg px-10 py-6"
+            >
+              Go to {profile?.role === 'parent' ? 'Parent' : 'Learning'} Dashboard
+            </Button>
+          ) : (
+            <Button 
+              onClick={() => navigate('/auth')} 
+              className="btn-primary text-lg px-10 py-6"
+            >
+              Sign Up Today
+            </Button>
+          )}
         </div>
       </section>
     </Layout>

@@ -8,6 +8,9 @@ import Index from "./pages/Index";
 import Parents from "./pages/Parents";
 import Children from "./pages/Children";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -17,12 +20,24 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/parents" element={<Parents />} />
-          <Route path="/children" element={<Children />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            
+            {/* Protected parent routes */}
+            <Route element={<ProtectedRoute allowedRoles={['parent']} />}>
+              <Route path="/parents" element={<Parents />} />
+            </Route>
+            
+            {/* Protected student routes */}
+            <Route element={<ProtectedRoute allowedRoles={['student']} />}>
+              <Route path="/children" element={<Children />} />
+            </Route>
+            
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

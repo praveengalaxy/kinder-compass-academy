@@ -9,16 +9,627 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      concept_tutorials: {
+        Row: {
+          audio_url: string | null
+          content: string
+          created_at: string
+          grade_id: number
+          id: string
+          subject_id: number
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          audio_url?: string | null
+          content: string
+          created_at?: string
+          grade_id: number
+          id?: string
+          subject_id: number
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          audio_url?: string | null
+          content?: string
+          created_at?: string
+          grade_id?: number
+          id?: string
+          subject_id?: number
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concept_tutorials_grade_id_fkey"
+            columns: ["grade_id"]
+            isOneToOne: false
+            referencedRelation: "grades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concept_tutorials_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grades: {
+        Row: {
+          age_range: string | null
+          created_at: string
+          description: string | null
+          display_name: string
+          id: number
+          name: string
+        }
+        Insert: {
+          age_range?: string | null
+          created_at?: string
+          description?: string | null
+          display_name: string
+          id?: number
+          name: string
+        }
+        Update: {
+          age_range?: string | null
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      parent_student_relations: {
+        Row: {
+          created_at: string
+          id: string
+          parent_id: string
+          student_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          parent_id: string
+          student_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          parent_id?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parent_student_relations_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parent_student_relations_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parent_tutorial_access: {
+        Row: {
+          accessed_at: string
+          id: string
+          parent_id: string
+          tutorial_id: string
+        }
+        Insert: {
+          accessed_at?: string
+          id?: string
+          parent_id: string
+          tutorial_id: string
+        }
+        Update: {
+          accessed_at?: string
+          id?: string
+          parent_id?: string
+          tutorial_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parent_tutorial_access_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parent_tutorial_access_tutorial_id_fkey"
+            columns: ["tutorial_id"]
+            isOneToOne: false
+            referencedRelation: "concept_tutorials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parent_video_watches: {
+        Row: {
+          created_at: string
+          id: string
+          parent_id: string
+          updated_at: string
+          video_id: string
+          watch_duration_seconds: number | null
+          watched: boolean
+          watched_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          parent_id: string
+          updated_at?: string
+          video_id: string
+          watch_duration_seconds?: number | null
+          watched?: boolean
+          watched_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          parent_id?: string
+          updated_at?: string
+          video_id?: string
+          watch_duration_seconds?: number | null
+          watched?: boolean
+          watched_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "parent_video_watches_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "parent_video_watches_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "parent_videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      parent_videos: {
+        Row: {
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          id: string
+          target_grade_max: number | null
+          target_grade_min: number | null
+          thumbnail_url: string | null
+          title: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          target_grade_max?: number | null
+          target_grade_min?: number | null
+          thumbnail_url?: string | null
+          title: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          id?: string
+          target_grade_max?: number | null
+          target_grade_min?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          first_name: string
+          id: string
+          last_name: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          first_name: string
+          id: string
+          last_name: string
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quiz_attempts: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          id: string
+          max_score: number | null
+          percentage: number | null
+          quiz_id: string
+          score: number | null
+          started_at: string
+          student_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          max_score?: number | null
+          percentage?: number | null
+          quiz_id: string
+          score?: number | null
+          started_at?: string
+          student_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          max_score?: number | null
+          percentage?: number | null
+          quiz_id?: string
+          score?: number | null
+          started_at?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_attempts_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_questions: {
+        Row: {
+          correct_answer: Json
+          created_at: string
+          explanation: string | null
+          id: string
+          options: Json | null
+          points: number
+          question: string
+          question_type: string
+          quiz_id: string
+        }
+        Insert: {
+          correct_answer: Json
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          options?: Json | null
+          points?: number
+          question: string
+          question_type: string
+          quiz_id: string
+        }
+        Update: {
+          correct_answer?: Json
+          created_at?: string
+          explanation?: string | null
+          id?: string
+          options?: Json | null
+          points?: number
+          question?: string
+          question_type?: string
+          quiz_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_quiz_id_fkey"
+            columns: ["quiz_id"]
+            isOneToOne: false
+            referencedRelation: "quizzes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_responses: {
+        Row: {
+          attempt_id: string
+          created_at: string
+          id: string
+          is_correct: boolean | null
+          points_earned: number | null
+          question_id: string
+          student_answer: Json | null
+        }
+        Insert: {
+          attempt_id: string
+          created_at?: string
+          id?: string
+          is_correct?: boolean | null
+          points_earned?: number | null
+          question_id: string
+          student_answer?: Json | null
+        }
+        Update: {
+          attempt_id?: string
+          created_at?: string
+          id?: string
+          is_correct?: boolean | null
+          points_earned?: number | null
+          question_id?: string
+          student_answer?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_responses_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quiz_responses_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "quiz_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quizzes: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty_level: number
+          id: string
+          time_limit_minutes: number | null
+          title: string
+          topic_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty_level: number
+          id?: string
+          time_limit_minutes?: number | null
+          title: string
+          topic_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty_level?: number
+          id?: string
+          time_limit_minutes?: number | null
+          title?: string
+          topic_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stories: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          max_grade: number
+          min_grade: number
+          moral: string | null
+          read_time_minutes: number | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          max_grade: number
+          min_grade: number
+          moral?: string | null
+          read_time_minutes?: number | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          max_grade?: number
+          min_grade?: number
+          moral?: string | null
+          read_time_minutes?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      story_tag_map: {
+        Row: {
+          story_id: string
+          tag_id: string
+        }
+        Insert: {
+          story_id: string
+          tag_id: string
+        }
+        Update: {
+          story_id?: string
+          tag_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_tag_map_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "story_tag_map_tag_id_fkey"
+            columns: ["tag_id"]
+            isOneToOne: false
+            referencedRelation: "story_tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_tags: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      subjects: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          display_name: string
+          icon_url: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          display_name: string
+          icon_url?: string | null
+          id?: number
+          name: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          display_name?: string
+          icon_url?: string | null
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      topics: {
+        Row: {
+          created_at: string
+          description: string | null
+          grade_id: number
+          id: string
+          name: string
+          subject_id: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          grade_id: number
+          id?: string
+          name: string
+          subject_id: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          grade_id?: number
+          id?: string
+          name?: string
+          subject_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_grade_id_fkey"
+            columns: ["grade_id"]
+            isOneToOne: false
+            referencedRelation: "grades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topics_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_role: {
+        Args: { user_id: string }
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      is_admin: {
+        Args: { user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      subject_type: "math" | "science" | "social_science" | "regional_language"
+      user_role: "parent" | "student"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -133,6 +744,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      subject_type: ["math", "science", "social_science", "regional_language"],
+      user_role: ["parent", "student"],
+    },
   },
 } as const
