@@ -27,10 +27,8 @@ import { supabase } from '@/integrations/supabase/client';
 const formSchema = z.object({
   first_name: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
   last_name: z.string().min(2, { message: 'Last name must be at least 2 characters.' }),
-  age: z.string().refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-    message: 'Age must be a positive number',
-  }).transform(val => Number(val)),
-  grade_id: z.string().optional(),
+  age: z.coerce.number().min(1, { message: 'Age must be a positive number' }),
+  grade_id: z.string().optional().transform(val => val ? Number(val) : null),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -62,7 +60,7 @@ const EditChildForm: React.FC<EditChildFormProps> = ({ child, onSuccess }) => {
     defaultValues: {
       first_name: child.first_name,
       last_name: child.last_name,
-      age: child.age?.toString() || '',
+      age: child.age || undefined,
       grade_id: child.grade_id?.toString() || '',
     },
   });
@@ -71,8 +69,8 @@ const EditChildForm: React.FC<EditChildFormProps> = ({ child, onSuccess }) => {
     await updateChild(child.id, {
       first_name: values.first_name,
       last_name: values.last_name,
-      age: values.age, // This is now properly converted to a number by the schema
-      grade_id: values.grade_id ? Number(values.grade_id) : null, // Convert string to number
+      age: values.age,
+      grade_id: values.grade_id,
     });
     
     if (onSuccess) onSuccess();
@@ -116,7 +114,16 @@ const EditChildForm: React.FC<EditChildFormProps> = ({ child, onSuccess }) => {
             <FormItem>
               <FormLabel>Age</FormLabel>
               <FormControl>
-                <Input placeholder="Enter age" type="number" min="1" {...field} />
+                <Input 
+                  placeholder="Enter age" 
+                  type="number" 
+                  min="1" 
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value === '' ? undefined : parseInt(e.target.value, 10);
+                    field.onChange(value);
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
