@@ -9,6 +9,150 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      child_story_progress: {
+        Row: {
+          child_id: string
+          completed: boolean
+          created_at: string
+          id: string
+          last_read_at: string
+          progress_percentage: number
+          story_id: string
+          updated_at: string
+        }
+        Insert: {
+          child_id: string
+          completed?: boolean
+          created_at?: string
+          id?: string
+          last_read_at?: string
+          progress_percentage?: number
+          story_id: string
+          updated_at?: string
+        }
+        Update: {
+          child_id?: string
+          completed?: boolean
+          created_at?: string
+          id?: string
+          last_read_at?: string
+          progress_percentage?: number
+          story_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "child_story_progress_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "child_story_progress_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      child_tutorial_progress: {
+        Row: {
+          child_id: string
+          completed: boolean
+          created_at: string
+          id: string
+          last_accessed_at: string
+          progress_percentage: number
+          tutorial_id: string
+          updated_at: string
+        }
+        Insert: {
+          child_id: string
+          completed?: boolean
+          created_at?: string
+          id?: string
+          last_accessed_at?: string
+          progress_percentage?: number
+          tutorial_id: string
+          updated_at?: string
+        }
+        Update: {
+          child_id?: string
+          completed?: boolean
+          created_at?: string
+          id?: string
+          last_accessed_at?: string
+          progress_percentage?: number
+          tutorial_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "child_tutorial_progress_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "child_tutorial_progress_tutorial_id_fkey"
+            columns: ["tutorial_id"]
+            isOneToOne: false
+            referencedRelation: "concept_tutorials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      children: {
+        Row: {
+          age: number | null
+          created_at: string
+          first_name: string
+          grade_id: number | null
+          id: string
+          last_name: string
+          parent_id: string
+          updated_at: string
+        }
+        Insert: {
+          age?: number | null
+          created_at?: string
+          first_name: string
+          grade_id?: number | null
+          id?: string
+          last_name: string
+          parent_id: string
+          updated_at?: string
+        }
+        Update: {
+          age?: number | null
+          created_at?: string
+          first_name?: string
+          grade_id?: number | null
+          id?: string
+          last_name?: string
+          parent_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "children_grade_id_fkey"
+            columns: ["grade_id"]
+            isOneToOne: false
+            referencedRelation: "grades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "children_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       concept_tutorials: {
         Row: {
           audio_url: string | null
@@ -275,6 +419,7 @@ export type Database = {
       }
       quiz_attempts: {
         Row: {
+          child_id: string | null
           completed: boolean
           completed_at: string | null
           id: string
@@ -286,6 +431,7 @@ export type Database = {
           student_id: string
         }
         Insert: {
+          child_id?: string | null
           completed?: boolean
           completed_at?: string | null
           id?: string
@@ -297,6 +443,7 @@ export type Database = {
           student_id: string
         }
         Update: {
+          child_id?: string | null
           completed?: boolean
           completed_at?: string | null
           id?: string
@@ -308,6 +455,13 @@ export type Database = {
           student_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "quiz_attempts_child_id_fkey"
+            columns: ["child_id"]
+            isOneToOne: false
+            referencedRelation: "children"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "quiz_attempts_quiz_id_fkey"
             columns: ["quiz_id"]

@@ -26,13 +26,10 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             
             {/* Protected parent routes */}
-            <Route element={<ProtectedRoute allowedRoles={['parent']} />}>
+            <Route element={<ProtectedRoute />}>
               <Route path="/parents" element={<Parents />} />
-            </Route>
-            
-            {/* Protected student routes */}
-            <Route element={<ProtectedRoute allowedRoles={['student']} />}>
-              <Route path="/children" element={<Children />} />
+              {/* This route now requires parent authentication but shows child content */}
+              <Route path="/children/:childId" element={<Children />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />

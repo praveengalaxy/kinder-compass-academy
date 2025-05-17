@@ -4,12 +4,10 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 
 type ProtectedRouteProps = {
-  allowedRoles?: ('parent' | 'student')[];
   redirectTo?: string;
 };
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  allowedRoles,
   redirectTo = '/auth',
 }) => {
   const { isAuthenticated, isLoading, profile } = useAuth();
@@ -26,8 +24,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to={redirectTo} replace />;
   }
 
-  if (allowedRoles && profile && !allowedRoles.includes(profile.role)) {
-    // Redirect to home if user doesn't have required role
+  // Only parents can access protected routes
+  if (profile && profile.role !== 'parent') {
     return <Navigate to="/" replace />;
   }
 

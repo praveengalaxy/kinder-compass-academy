@@ -21,7 +21,7 @@ interface AuthContextType {
   profile: Profile | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, firstName: string, lastName: string, role: UserRole) => Promise<void>;
+  signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
   signOut: () => Promise<void>;
   isAuthenticated: boolean;
 }
@@ -118,12 +118,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
+      // Check if the user is a parent
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single();
+        
+      if (profileError) {
+        toast({
+          title: 'Login failed',
+          description: 'Error fetching user profile.',
+          variant: 'destructive',
+        });
+        await supabase.auth.signOut();
+        return;
+      }
+      
+      if (profileData.role !== 'parent') {
+        toast({
+          title: 'Access denied',
+          description: 'Only parent accounts can access this application.',
+          variant: 'destructive',
+        });
+        await supabase.auth.signOut();
+        return;
+      }
+
       toast({
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
       });
       
-      navigate('/');
+      navigate('/parents');
     } catch (error) {
       console.error('Error during sign in:', error);
       toast({
@@ -134,7 +161,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, password: string, firstName: string, lastName: string, role: UserRole) => {
+  const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -143,7 +170,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           data: {
             first_name: firstName,
             last_name: lastName,
-            role: role,
+            role: 'parent', // Always set to parent - we no longer need student role
           },
         },
       });

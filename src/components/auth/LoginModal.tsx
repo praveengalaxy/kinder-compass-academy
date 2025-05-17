@@ -26,7 +26,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
         
         <div className="flex flex-col items-center space-y-4 py-4">
           <p className="text-center text-muted-foreground">
-            Please sign in or create an account to access all features.
+            Please sign in or create a parent account to access all features and manage your children's education.
           </p>
           
           <Button 

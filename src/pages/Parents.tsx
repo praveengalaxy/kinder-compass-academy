@@ -8,6 +8,9 @@ import { Button } from '@/components/ui/button';
 import OnboardingTooltip from '@/components/ui/OnboardingTooltip';
 import { BookOpen, FileText, Video, VolumeX, Volume2 } from 'lucide-react';
 import EducationCard from '@/components/shared/EducationCard';
+import ChildSelector from '@/components/children/ChildSelector';
+import ManageChildrenPanel from '@/components/children/ManageChildrenPanel';
+import { ChildProvider } from '@/contexts/ChildContext';
 
 const Parents = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -69,182 +72,195 @@ const Parents = () => {
   ];
 
   return (
-    <Layout>
-      <section className="section-parent py-12 px-4">
-        <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-nunito font-bold">Parents Section</h1>
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setAudioEnabled(!audioEnabled)}
-              className="relative"
-              title={audioEnabled ? "Disable audio guidance" : "Enable audio guidance"}
-            >
-              {audioEnabled ? <Volume2 className="h-6 w-6" /> : <VolumeX className="h-6 w-6" />}
-              <OnboardingTooltip
-                id="audio-guidance"
-                title="Audio Guidance"
-                content="Enable audio to hear explanations in your preferred language"
-                position="left"
-              />
-            </Button>
-          </div>
+    <ChildProvider>
+      <Layout>
+        <section className="section-parent py-12 px-4">
+          <div className="container mx-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h1 className="text-3xl md:text-4xl font-nunito font-bold">Parents Section</h1>
+              <div className="flex items-center gap-4">
+                <ChildSelector />
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => setAudioEnabled(!audioEnabled)}
+                  className="relative"
+                  title={audioEnabled ? "Disable audio guidance" : "Enable audio guidance"}
+                >
+                  {audioEnabled ? <Volume2 className="h-6 w-6" /> : <VolumeX className="h-6 w-6" />}
+                  <OnboardingTooltip
+                    id="audio-guidance"
+                    title="Audio Guidance"
+                    content="Enable audio to hear explanations in your preferred language"
+                    position="left"
+                  />
+                </Button>
+              </div>
+            </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="grid grid-cols-3 w-full max-w-3xl mx-auto">
-              <TabsTrigger value="dashboard" className="text-base md:text-lg py-3">
-                Child's Dashboard
-              </TabsTrigger>
-              <TabsTrigger value="concepts" className="text-base md:text-lg py-3">
-                Concept Explainers
-              </TabsTrigger>
-              <TabsTrigger value="videos" className="text-base md:text-lg py-3">
-                Parenting Videos
-              </TabsTrigger>
-            </TabsList>
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+              <TabsList className="grid grid-cols-4 w-full max-w-3xl mx-auto">
+                <TabsTrigger value="dashboard" className="text-base md:text-lg py-3">
+                  Dashboard
+                </TabsTrigger>
+                <TabsTrigger value="concepts" className="text-base md:text-lg py-3">
+                  Concept Explainers
+                </TabsTrigger>
+                <TabsTrigger value="videos" className="text-base md:text-lg py-3">
+                  Parenting Videos
+                </TabsTrigger>
+                <TabsTrigger value="manage" className="text-base md:text-lg py-3">
+                  Manage Children
+                </TabsTrigger>
+              </TabsList>
 
-            {/* Child's Dashboard Tab */}
-            <TabsContent value="dashboard" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Progress Overview */}
-                <Card className="lg:col-span-2">
+              {/* Child's Dashboard Tab */}
+              <TabsContent value="dashboard" className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Progress Overview */}
+                  <Card className="lg:col-span-2">
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <span>Subject Progress</span>
+                        <OnboardingTooltip
+                          id="progress-overview"
+                          title="Progress Tracking"
+                          content="This shows how your child is performing in different subjects"
+                          position="right"
+                        />
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-6">
+                        {childProgress.map((subject) => (
+                          <div key={subject.subject} className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="font-medium">{subject.subject}</span>
+                              <span>{subject.progress}%</span>
+                            </div>
+                            <Progress value={subject.progress} className={subject.color} />
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Recent Activities */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Recent Activities</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-4">
+                        {recentActivities.map((activity) => (
+                          <li key={activity.id} className="border-b pb-3 last:border-b-0">
+                            <div className="font-medium">{activity.activity}</div>
+                            <div className="flex justify-between text-sm text-muted-foreground mt-1">
+                              <span>{activity.date}</span>
+                              {activity.score && <span className="font-medium text-edu-blue">{activity.score}</span>}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Areas Needing Attention */}
+                <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center">
-                      <span>Subject Progress</span>
+                      <span>Areas Needing Attention</span>
                       <OnboardingTooltip
-                        id="progress-overview"
-                        title="Progress Tracking"
-                        content="This shows how your child is performing in different subjects"
-                        position="right"
+                        id="areas-attention"
+                        title="Focus Areas"
+                        content="These are topics where your child might need extra support"
+                        position="top"
                       />
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-6">
-                      {childProgress.map((subject) => (
-                        <div key={subject.subject} className="space-y-2">
-                          <div className="flex justify-between">
-                            <span className="font-medium">{subject.subject}</span>
-                            <span>{subject.progress}%</span>
-                          </div>
-                          <Progress value={subject.progress} className={subject.color} />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {areasOfImprovement.map((area, index) => (
+                        <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                          <div className="font-medium text-edu-blue">{area.subject}: {area.topic}</div>
+                          <div className="text-sm mt-1">Suggestion: {area.suggestion}</div>
                         </div>
                       ))}
                     </div>
                   </CardContent>
                 </Card>
+              </TabsContent>
 
-                {/* Recent Activities */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Recent Activities</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-4">
-                      {recentActivities.map((activity) => (
-                        <li key={activity.id} className="border-b pb-3 last:border-b-0">
-                          <div className="font-medium">{activity.activity}</div>
-                          <div className="flex justify-between text-sm text-muted-foreground mt-1">
-                            <span>{activity.date}</span>
-                            {activity.score && <span className="font-medium text-edu-blue">{activity.score}</span>}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Areas Needing Attention */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <span>Areas Needing Attention</span>
-                    <OnboardingTooltip
-                      id="areas-attention"
-                      title="Focus Areas"
-                      content="These are topics where your child might need extra support"
-                      position="top"
-                    />
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {areasOfImprovement.map((area, index) => (
-                      <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                        <div className="font-medium text-edu-blue">{area.subject}: {area.topic}</div>
-                        <div className="text-sm mt-1">Suggestion: {area.suggestion}</div>
-                      </div>
+              {/* Concept Explainers Tab */}
+              <TabsContent value="concepts">
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {conceptExplainers.map((concept, index) => (
+                      <EducationCard
+                        key={index}
+                        title={concept.title}
+                        description={concept.description}
+                        icon={concept.icon}
+                        onClick={() => alert(`Opening concept: ${concept.title}`)}
+                      />
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
 
-            {/* Concept Explainers Tab */}
-            <TabsContent value="concepts">
-              <div className="space-y-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Language Preferences</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <p className="text-muted-foreground">Select your preferred language for audio explanations.</p>
+                        <div className="flex flex-wrap gap-2">
+                          <Button variant="outline" className="border-2 border-edu-blue">English</Button>
+                          <Button variant="outline">हिन्दी (Hindi)</Button>
+                          <Button variant="outline">தமிழ் (Tamil)</Button>
+                          <Button variant="outline">తెలుగు (Telugu)</Button>
+                          <Button variant="outline">ಕನ್ನಡ (Kannada)</Button>
+                          <Button variant="outline">বাংলা (Bengali)</Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              {/* Parenting Videos Tab */}
+              <TabsContent value="videos">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {conceptExplainers.map((concept, index) => (
-                    <EducationCard
-                      key={index}
-                      title={concept.title}
-                      description={concept.description}
-                      icon={concept.icon}
-                      onClick={() => alert(`Opening concept: ${concept.title}`)}
-                    />
+                  {parentingVideos.map((video, index) => (
+                    <div key={index} className="edu-card overflow-hidden">
+                      <div className="aspect-video mb-4 rounded-lg overflow-hidden">
+                        <img 
+                          src={video.thumbnail} 
+                          alt={video.title}
+                          className="w-full h-full object-cover transition-transform hover:scale-105"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Button size="icon" className="rounded-full bg-white/80 hover:bg-white text-edu-blue">
+                            <Video className="h-6 w-6" />
+                          </Button>
+                        </div>
+                      </div>
+                      <h3 className="font-nunito font-bold text-xl mb-2">{video.title}</h3>
+                      <p className="text-gray-600">{video.description}</p>
+                    </div>
                   ))}
                 </div>
+              </TabsContent>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Language Preferences</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <p className="text-muted-foreground">Select your preferred language for audio explanations.</p>
-                      <div className="flex flex-wrap gap-2">
-                        <Button variant="outline" className="border-2 border-edu-blue">English</Button>
-                        <Button variant="outline">हिन्दी (Hindi)</Button>
-                        <Button variant="outline">தமிழ் (Tamil)</Button>
-                        <Button variant="outline">తెలుగు (Telugu)</Button>
-                        <Button variant="outline">ಕನ್ನಡ (Kannada)</Button>
-                        <Button variant="outline">বাংলা (Bengali)</Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-
-            {/* Parenting Videos Tab */}
-            <TabsContent value="videos">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {parentingVideos.map((video, index) => (
-                  <div key={index} className="edu-card overflow-hidden">
-                    <div className="aspect-video mb-4 rounded-lg overflow-hidden">
-                      <img 
-                        src={video.thumbnail} 
-                        alt={video.title}
-                        className="w-full h-full object-cover transition-transform hover:scale-105"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Button size="icon" className="rounded-full bg-white/80 hover:bg-white text-edu-blue">
-                          <Video className="h-6 w-6" />
-                        </Button>
-                      </div>
-                    </div>
-                    <h3 className="font-nunito font-bold text-xl mb-2">{video.title}</h3>
-                    <p className="text-gray-600">{video.description}</p>
-                  </div>
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-    </Layout>
+              {/* Manage Children Tab */}
+              <TabsContent value="manage">
+                <ManageChildrenPanel />
+              </TabsContent>
+            </Tabs>
+          </div>
+        </section>
+      </Layout>
+    </ChildProvider>
   );
 };
 
