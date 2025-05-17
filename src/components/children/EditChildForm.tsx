@@ -136,7 +136,10 @@ const EditChildForm: React.FC<EditChildFormProps> = ({ child, onSuccess }) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Grade Level</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select 
+                onValueChange={field.onChange} 
+                value={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select grade level" />
