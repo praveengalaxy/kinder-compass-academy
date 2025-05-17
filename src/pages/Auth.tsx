@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import Layout from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -15,7 +14,6 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [role, setRole] = useState<'parent' | 'student'>('student');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const { signIn, signUp, isAuthenticated } = useAuth();
@@ -42,7 +40,8 @@ const Auth = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await signUp(email, password, firstName, lastName, role);
+      // The signUp function only requires 4 arguments now
+      await signUp(email, password, firstName, lastName);
     } finally {
       setIsSubmitting(false);
     }
@@ -160,24 +159,6 @@ const Auth = () => {
                       disabled={isSubmitting}
                       minLength={6}
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>I am a:</Label>
-                    <RadioGroup 
-                      value={role} 
-                      onValueChange={(value) => setRole(value as 'parent' | 'student')}
-                      className="flex space-x-4"
-                      disabled={isSubmitting}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="student" id="student" />
-                        <Label htmlFor="student">Student</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="parent" id="parent" />
-                        <Label htmlFor="parent">Parent</Label>
-                      </div>
-                    </RadioGroup>
                   </div>
                   <Button 
                     type="submit" 

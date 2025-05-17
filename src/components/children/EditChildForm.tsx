@@ -71,8 +71,8 @@ const EditChildForm: React.FC<EditChildFormProps> = ({ child, onSuccess }) => {
     await updateChild(child.id, {
       first_name: values.first_name,
       last_name: values.last_name,
-      age: values.age,
-      grade_id: values.grade_id ? parseInt(values.grade_id) : null,
+      age: values.age, // This is now properly converted to a number by the schema
+      grade_id: values.grade_id ? Number(values.grade_id) : null, // Convert string to number
     });
     
     if (onSuccess) onSuccess();

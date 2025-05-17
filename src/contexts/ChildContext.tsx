@@ -97,12 +97,18 @@ export const ChildProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if (!user) return;
     
     try {
+      // Ensure required fields are present
+      const childToInsert = {
+        first_name: childData.first_name!,
+        last_name: childData.last_name!,
+        age: childData.age,
+        grade_id: childData.grade_id,
+        parent_id: user.id,
+      };
+
       const { data, error } = await supabase
         .from('children')
-        .insert({
-          ...childData,
-          parent_id: user.id,
-        })
+        .insert(childToInsert)
         .select()
         .single();
       

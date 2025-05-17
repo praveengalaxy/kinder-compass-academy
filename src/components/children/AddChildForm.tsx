@@ -66,8 +66,8 @@ const AddChildForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     await addChild({
       first_name: values.first_name,
       last_name: values.last_name,
-      age: values.age,
-      grade_id: values.grade_id ? parseInt(values.grade_id) : null,
+      age: values.age, // Now this is properly converted to a number by the schema
+      grade_id: values.grade_id ? Number(values.grade_id) : null, // Convert string to number
     });
     
     form.reset();
